@@ -1,16 +1,16 @@
-from flask import Flask
-from flask_cors import CORS
-from src.routes.auth_routes import auth_bp
+from fastapi import FastAPI
+from src.routes.auth_routes import auth_router
 
-def create_app():
-    app = Flask(__name__)
-    CORS(app, origins=["*"], supports_credentials=True)
-    app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
+app = FastAPI(
+    title="Smart FMS Backend",
+    version="1.0.0",
+    description="Backend API for Smart FMS system"
+)
 
-    @app.route("/")
-    def hello():
-        return "Hello from Smart FMS Backend!"
+# Include routers
+app.include_router(auth_router)
 
-    return app
-
-app = create_app()
+# Root health check
+@app.get("/")
+def read_root():
+    return {"message": "Hello from Smart FMS Backend!"}
