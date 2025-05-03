@@ -2,4 +2,5 @@ fastapi
 uvicorn
 sqlalchemy
 passlib[bcrypt]
+python-dotenv
 gunicorn
