@@ -4,7 +4,7 @@ from src.db import SessionLocal
 
 router = APIRouter()
 
-@router.post("/auth/login")
+@router.post("/login")
 async def login(request: Request):
     data = await request.json()
     email = data.get("email")
@@ -16,7 +16,6 @@ async def login(request: Request):
         if not user:
             raise HTTPException(status_code=401, detail="User not found")
 
-        # TEMPORARY BYPASS for admin@example.com
         if user.contact_email == "admin@example.com":
             return {
                 "message": "Login bypassed for admin@example.com",
@@ -40,3 +39,4 @@ async def login(request: Request):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     finally:
         db.close()
+
