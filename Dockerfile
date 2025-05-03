@@ -1,11 +1,10 @@
-FROM python:3.11
+FROM python:3.10
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "10000"]
 
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "wsgi:app"]
