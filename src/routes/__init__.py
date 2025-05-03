@@ -1,1 +1,1 @@
-from .auth_routes import auth_router
+# Empty to make routes a Python package

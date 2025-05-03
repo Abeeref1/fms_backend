@@ -1,16 +1,17 @@
 from fastapi import FastAPI
-from src.routes.auth_routes import auth_router
+from fastapi.middleware.cors import CORSMiddleware
+from src.routes.auth_routes import router as auth_router
 
-app = FastAPI(
-    title="Smart FMS Backend",
-    version="1.0.0",
-    description="Backend API for Smart FMS system"
+app = FastAPI()
+
+# CORS settings
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all for now, restrict in prod
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(auth_router)
-
-# Root health check
-@app.get("/")
-def read_root():
-    return {"message": "Hello from Smart FMS Backend!"}
+# Register routes
+app.include_router(auth_router, prefix="/api/v1/auth")

@@ -1,3 +1,6 @@
-flask
+fastapi
+uvicorn
+python-multipart
+pydantic
+requests
 gunicorn
-flask-cors
