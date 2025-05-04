@@ -1,11 +1,12 @@
 import os
-from fastapi import FastAPI, Depends, HTTPException
+
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Pull in your auth router (as “router” in auth_routes.py)
-from src.routes.auth_routes import router as auth_router
+# <-- Change here: drop the leading "src."
+from routes.auth_routes import router as auth_router
 
 # --------------------
 # Database setup
