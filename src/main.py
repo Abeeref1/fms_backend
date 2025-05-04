@@ -1,50 +1,51 @@
-# src/main.py
 import os
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 from passlib.context import CryptContext
 
+# Bring in your models & routes
 from src.models.stakeholder import Stakeholder
-from src.db import Base, get_db
 from src.routes.auth_routes import router as auth_router
 
-# ——— Database setup ———
+# --- Database setup ---
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data.db")
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
-# ——— Password hashing ———
-# switch to pbkdf2_sha256 (no native bcrypt needed)
+# --- Admin default credentials ---
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@example.com")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "FM-System-2025!")
+
+# --- Password hashing context (must match auth_routes) ---
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-app = FastAPI()
+# --- FastAPI init ---
+app = FastAPI(version="0.1.0")
 
-# On startup: create tables + default admin
+# --- Auto-create tables & default admin on startup ---
 @app.on_event("startup")
 def on_startup():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-        admin = db.query(Stakeholder).filter(
-            Stakeholder.contact_email == "admin@example.com"
-        ).first()
-        if not admin:
-            hashed = pwd_context.hash("FM-System-2025!")
+        # Only add admin if it doesn't already exist
+        if not db.query(Stakeholder).filter(Stakeholder.contact_email == ADMIN_EMAIL).first():
+            hashed = pwd_context.hash(ADMIN_PASSWORD)
             admin = Stakeholder(
                 name="Administrator",
-                contact_email="admin@example.com",
+                contact_email=ADMIN_EMAIL,
                 hashed_password=hashed
             )
             db.add(admin)
             db.commit()
-            print("✅ Default admin@example.com created")
     finally:
         db.close()
 
-# CORS setup (if needed)
+# --- CORS middleware ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -53,9 +54,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount auth router
+# --- DB session dependency ---
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# --- Mount auth router ---
 app.include_router(
     auth_router,
     prefix="/api/v1/auth",
-    dependencies=[Depends(get_db)]
+    dependencies=[Depends(get_db)],
 )
+
