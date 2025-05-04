@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: fms-backend
+    env: docker # Specify Docker environment
+    repo: https://github.com/your-org/your-repo # Placeholder - User needs to replace this
+    branch: main
+    # Dockerfile path is relative to the repo root
+    dockerfilePath: ./fms_backend/Dockerfile 
+    # The start.sh script is run via the Dockerfile ENTRYPOINT, so startCommand is not needed here
+    # buildCommand: "" # Not needed for Docker deploys unless extra steps required before Docker build
+    # startCommand: "" # Handled by Dockerfile ENTRYPOINT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11 # Match Dockerfile base image
+      - key: DATABASE_URL # Example for Render PostgreSQL - Adjust if using MySQL or other DB
+        fromDatabase:
+          name: fms-database # Replace with your Render DB name
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true # Or use a specific secret key
+      - key: JWT_SECRET_KEY
+        generateValue: true # Or use a specific secret key
+      - key: ADMIN_EMAIL
+        value: admin@example.com # Default admin email
+      - key: ADMIN_PASSWORD
+        sync: false # Use Render's secret management for sensitive values
+      - key: PORT # Render sets this automatically, but Gunicorn uses it in start.sh
+        value: 10000 # Match the port exposed in Dockerfile/start.sh
+      - key: WEB_CONCURRENCY # Optional: Adjust based on instance size
+        value: 4
+
+  - type: static_site
+    name: fms-frontend
+    env: static
+    repo: https://github.com/your-org/your-repo # Placeholder - User needs to replace this
+    branch: main
+    # Set the root directory if frontend code is not at the repo root
+    rootDir: ./fms_frontend 
+    buildCommand: "npm install && npm run build"
+    publishPath: ./dist # Relative to rootDir
+    # Environment variables for the build process (e.g., API URL)
+    envVars:
+      # Use VITE_ prefix for Vite projects (React/Vue)
+      - key: VITE_API_BASE_URL 
+        # Use the backend service's internal or external URL
+        # Using the external URL is generally safer
+        value: https://fms-backend-ft1y.onrender.com # Use the actual backend URL
+

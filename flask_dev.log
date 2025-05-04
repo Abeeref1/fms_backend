@@ -1,0 +1,211 @@
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.env] No changes in schema detected.
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+Blueprints registered successfully.
+--- Registered URL Map ---
+Map([<Rule '/static/<filename>' (HEAD, OPTIONS, GET) -> static>,
+ <Rule '/api/v1/regions' (HEAD, OPTIONS, GET) -> region_bp.get_regions>,
+ <Rule '/api/v1/regions' (POST, OPTIONS) -> region_bp.create_region>,
+ <Rule '/api/v1/regions/<id>' (HEAD, OPTIONS, GET) -> region_bp.get_region>,
+ <Rule '/api/v1/regions/<id>' (PUT, OPTIONS) -> region_bp.update_region>,
+ <Rule '/api/v1/regions/<id>' (OPTIONS, DELETE) -> region_bp.delete_region>,
+ <Rule '/api/v1/schools' (HEAD, OPTIONS, GET) -> school_bp.get_schools>,
+ <Rule '/api/v1/schools' (POST, OPTIONS) -> school_bp.create_school>,
+ <Rule '/api/v1/schools/<id>' (HEAD, OPTIONS, GET) -> school_bp.get_school>,
+ <Rule '/api/v1/schools/<id>' (PUT, OPTIONS) -> school_bp.update_school>,
+ <Rule '/api/v1/schools/<id>' (OPTIONS, DELETE) -> school_bp.delete_school>,
+ <Rule '/api/v1/stakeholders' (HEAD, OPTIONS, GET) -> stakeholder_bp.get_stakeholders>,
+ <Rule '/api/v1/stakeholders' (POST, OPTIONS) -> stakeholder_bp.create_stakeholder>,
+ <Rule '/api/v1/stakeholders/<id>' (HEAD, OPTIONS, GET) -> stakeholder_bp.get_stakeholder>,
+ <Rule '/api/v1/stakeholders/<id>' (PUT, OPTIONS) -> stakeholder_bp.update_stakeholder>,
+ <Rule '/api/v1/stakeholders/<id>' (OPTIONS, DELETE) -> stakeholder_bp.delete_stakeholder>,
+ <Rule '/api/v1/assets' (HEAD, OPTIONS, GET) -> asset_bp.get_assets>,
+ <Rule '/api/v1/assets' (POST, OPTIONS) -> asset_bp.create_asset>,
+ <Rule '/api/v1/assets/<id>' (HEAD, OPTIONS, GET) -> asset_bp.get_asset>,
+ <Rule '/api/v1/assets/<id>' (PUT, OPTIONS) -> asset_bp.update_asset>,
+ <Rule '/api/v1/assets/<id>' (OPTIONS, DELETE) -> asset_bp.delete_asset>,
+ <Rule '/api/v1/manpower' (HEAD, OPTIONS, GET) -> manpower_bp.get_manpower_list>,
+ <Rule '/api/v1/manpower' (POST, OPTIONS) -> manpower_bp.create_manpower>,
+ <Rule '/api/v1/manpower/<id>' (HEAD, OPTIONS, GET) -> manpower_bp.get_manpower>,
+ <Rule '/api/v1/manpower/<id>' (PUT, OPTIONS) -> manpower_bp.update_manpower>,
+ <Rule '/api/v1/manpower/<id>' (OPTIONS, DELETE) -> manpower_bp.delete_manpower>,
+ <Rule '/api/v1/services' (HEAD, OPTIONS, GET) -> service_bp.get_services>,
+ <Rule '/api/v1/services' (POST, OPTIONS) -> service_bp.create_service>,
+ <Rule '/api/v1/services/<id>' (HEAD, OPTIONS, GET) -> service_bp.get_service>,
+ <Rule '/api/v1/services/<id>' (PUT, OPTIONS) -> service_bp.update_service>,
+ <Rule '/api/v1/services/<id>' (OPTIONS, DELETE) -> service_bp.delete_service>,
+ <Rule '/api/v1/work-orders' (HEAD, OPTIONS, GET) -> work_order_bp.get_work_orders>,
+ <Rule '/api/v1/work-orders' (POST, OPTIONS) -> work_order_bp.create_work_order>,
+ <Rule '/api/v1/work-orders/<id>' (HEAD, OPTIONS, GET) -> work_order_bp.get_work_order>,
+ <Rule '/api/v1/work-orders/<id>' (PUT, OPTIONS) -> work_order_bp.update_work_order>,
+ <Rule '/api/v1/work-orders/<id>' (OPTIONS, DELETE) -> work_order_bp.delete_work_order>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs' (HEAD, OPTIONS, GET) -> work_order_cost_bp.get_work_order_costs>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs' (POST, OPTIONS) -> work_order_cost_bp.add_work_order_cost>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs/<cost_id>' (HEAD, OPTIONS, GET) -> work_order_cost_bp.get_work_order_cost>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs/<cost_id>' (PUT, OPTIONS) -> work_order_cost_bp.update_work_order_cost>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs/<cost_id>' (OPTIONS, DELETE) -> work_order_cost_bp.delete_work_order_cost>,
+ <Rule '/api/v1/slas' (HEAD, OPTIONS, GET) -> sla_bp.get_slas>,
+ <Rule '/api/v1/slas' (POST, OPTIONS) -> sla_bp.create_sla>,
+ <Rule '/api/v1/slas/<id>' (HEAD, OPTIONS, GET) -> sla_bp.get_sla>,
+ <Rule '/api/v1/slas/<id>' (PUT, OPTIONS) -> sla_bp.update_sla>,
+ <Rule '/api/v1/slas/<id>' (OPTIONS, DELETE) -> sla_bp.delete_sla>,
+ <Rule '/api/v1/slas/<sla_id>/results' (HEAD, OPTIONS, GET) -> sla_result_bp.get_sla_results>,
+ <Rule '/api/v1/slas/<sla_id>/results' (POST, OPTIONS) -> sla_result_bp.add_sla_result>,
+ <Rule '/api/v1/slas/<sla_id>/results/<result_id>' (HEAD, OPTIONS, GET) -> sla_result_bp.get_sla_result>,
+ <Rule '/api/v1/slas/<sla_id>/results/<result_id>' (PUT, OPTIONS) -> sla_result_bp.update_sla_result>,
+ <Rule '/api/v1/slas/<sla_id>/results/<result_id>' (OPTIONS, DELETE) -> sla_result_bp.delete_sla_result>,
+ <Rule '/api/v1/kpis' (HEAD, OPTIONS, GET) -> kpi_bp.get_kpis>,
+ <Rule '/api/v1/kpis' (POST, OPTIONS) -> kpi_bp.create_kpi>,
+ <Rule '/api/v1/kpis/<id>' (HEAD, OPTIONS, GET) -> kpi_bp.get_kpi>,
+ <Rule '/api/v1/kpis/<id>' (PUT, OPTIONS) -> kpi_bp.update_kpi>,
+ <Rule '/api/v1/kpis/<id>' (OPTIONS, DELETE) -> kpi_bp.delete_kpi>,
+ <Rule '/api/v1/kpis/<kpi_id>/results' (HEAD, OPTIONS, GET) -> kpi_result_bp.get_kpi_results>,
+ <Rule '/api/v1/kpis/<kpi_id>/results' (POST, OPTIONS) -> kpi_result_bp.add_kpi_result>,
+ <Rule '/api/v1/kpis/<kpi_id>/results/<result_id>' (HEAD, OPTIONS, GET) -> kpi_result_bp.get_kpi_result>,
+ <Rule '/api/v1/kpis/<kpi_id>/results/<result_id>' (PUT, OPTIONS) -> kpi_result_bp.update_kpi_result>,
+ <Rule '/api/v1/kpis/<kpi_id>/results/<result_id>' (OPTIONS, DELETE) -> kpi_result_bp.delete_kpi_result>,
+ <Rule '/api/v1/invoices' (HEAD, OPTIONS, GET) -> invoice_bp.get_invoices>,
+ <Rule '/api/v1/invoices/<id>' (HEAD, OPTIONS, GET) -> invoice_bp.get_invoice>,
+ <Rule '/api/v1/invoices/generate' (POST, OPTIONS) -> invoice_bp.generate_monthly_invoices>,
+ <Rule '/api/v1/invoices/<id>/status' (PUT, OPTIONS) -> invoice_bp.update_invoice_status>,
+ <Rule '/api/v1/invoices/<id>/export/csv' (HEAD, OPTIONS, GET) -> invoice_bp.export_invoice_csv>,
+ <Rule '/api/v1/invoices/<id>/export/pdf' (HEAD, OPTIONS, GET) -> invoice_bp.export_invoice_pdf>,
+ <Rule '/api/v1/reports/work_order_status' (HEAD, OPTIONS, GET) -> report_bp.work_order_status_report>,
+ <Rule '/api/v1/reports/asset_count_by_type' (HEAD, OPTIONS, GET) -> report_bp.asset_count_by_type_report>,
+ <Rule '/api/v1/reports/monthly_cost_summary' (HEAD, OPTIONS, GET) -> report_bp.monthly_cost_summary_report>,
+ <Rule '/api/v1/notifications' (HEAD, OPTIONS, GET) -> notification_bp.get_notifications>,
+ <Rule '/api/v1/notifications/<id>/read' (PATCH, OPTIONS) -> notification_bp.mark_notification_as_read>,
+ <Rule '/api/v1/notifications/read_all' (PATCH, OPTIONS) -> notification_bp.mark_all_notifications_as_read>,
+ <Rule '/api/v1/integrations/sap/push_invoice/<invoice_id>' (POST, OPTIONS) -> integration_bp.trigger_push_invoice_to_sap>,
+ <Rule '/api/v1/integrations/sap/payment_status/<invoice_id>' (HEAD, OPTIONS, GET) -> integration_bp.trigger_fetch_payment_status_from_sap>,
+ <Rule '/api/v1/integrations/maximo/create_work_order/<work_order_id>' (POST, OPTIONS) -> integration_bp.trigger_create_work_order_in_maximo>,
+ <Rule '/api/v1/integrations/maximo/update_work_order_status/<work_order_id>' (PATCH, OPTIONS) -> integration_bp.trigger_update_work_order_status_in_maximo>,
+ <Rule '/api/v1/integrations/maximo/sync_asset/<external_asset_id>' (POST, OPTIONS) -> integration_bp.trigger_sync_asset_from_maximo>,
+ <Rule '/api/v1/auth/login' (POST, OPTIONS) -> auth_bp.login>,
+ <Rule '/api/v1/auth/refresh' (POST, OPTIONS) -> auth_bp.refresh>,
+ <Rule '/api/v1/auth/me' (HEAD, OPTIONS, GET) -> auth_bp.get_current_user>,
+ <Rule '/' (HEAD, OPTIONS, GET) -> index>])
+------------------------
+Checking migrations directory: /home/ubuntu/fms_backend/migrations
+Generating potential migration for authentication fields...
+Migration script generated (if changes detected). Applying migrations...
+Database migrations applied successfully.
+ * Serving Flask app 'src.main:create_app'
+ * Debug mode: off
+INFO  [werkzeug] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5004
+ * Running on http://169.254.0.21:5004
+INFO  [werkzeug] [33mPress CTRL+C to quit[0m
+INFO  [werkzeug] 127.0.0.1 - - [03/May/2025 05:33:51] "OPTIONS /api/v1/auth/login HTTP/1.1" 200 -
+Traceback (most recent call last):
+  File "/home/ubuntu/fms_backend/src/main.py", line 9, in <module>
+    from . import db
+ImportError: attempted relative import with no known parent package
+Traceback (most recent call last):
+  File "/home/ubuntu/fms_backend/src/main.py", line 9, in <module>
+    from src import db
+ModuleNotFoundError: No module named 'src'
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.env] No changes in schema detected.
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+Blueprints registered successfully.
+--- Registered URL Map ---
+Map([<Rule '/static/<filename>' (HEAD, OPTIONS, GET) -> static>,
+ <Rule '/api/v1/regions' (HEAD, OPTIONS, GET) -> region_bp.get_regions>,
+ <Rule '/api/v1/regions' (OPTIONS, POST) -> region_bp.create_region>,
+ <Rule '/api/v1/regions/<id>' (HEAD, OPTIONS, GET) -> region_bp.get_region>,
+ <Rule '/api/v1/regions/<id>' (OPTIONS, PUT) -> region_bp.update_region>,
+ <Rule '/api/v1/regions/<id>' (OPTIONS, DELETE) -> region_bp.delete_region>,
+ <Rule '/api/v1/schools' (HEAD, OPTIONS, GET) -> school_bp.get_schools>,
+ <Rule '/api/v1/schools' (OPTIONS, POST) -> school_bp.create_school>,
+ <Rule '/api/v1/schools/<id>' (HEAD, OPTIONS, GET) -> school_bp.get_school>,
+ <Rule '/api/v1/schools/<id>' (OPTIONS, PUT) -> school_bp.update_school>,
+ <Rule '/api/v1/schools/<id>' (OPTIONS, DELETE) -> school_bp.delete_school>,
+ <Rule '/api/v1/stakeholders' (HEAD, OPTIONS, GET) -> stakeholder_bp.get_stakeholders>,
+ <Rule '/api/v1/stakeholders' (OPTIONS, POST) -> stakeholder_bp.create_stakeholder>,
+ <Rule '/api/v1/stakeholders/<id>' (HEAD, OPTIONS, GET) -> stakeholder_bp.get_stakeholder>,
+ <Rule '/api/v1/stakeholders/<id>' (OPTIONS, PUT) -> stakeholder_bp.update_stakeholder>,
+ <Rule '/api/v1/stakeholders/<id>' (OPTIONS, DELETE) -> stakeholder_bp.delete_stakeholder>,
+ <Rule '/api/v1/assets' (HEAD, OPTIONS, GET) -> asset_bp.get_assets>,
+ <Rule '/api/v1/assets' (OPTIONS, POST) -> asset_bp.create_asset>,
+ <Rule '/api/v1/assets/<id>' (HEAD, OPTIONS, GET) -> asset_bp.get_asset>,
+ <Rule '/api/v1/assets/<id>' (OPTIONS, PUT) -> asset_bp.update_asset>,
+ <Rule '/api/v1/assets/<id>' (OPTIONS, DELETE) -> asset_bp.delete_asset>,
+ <Rule '/api/v1/manpower' (HEAD, OPTIONS, GET) -> manpower_bp.get_manpower_list>,
+ <Rule '/api/v1/manpower' (OPTIONS, POST) -> manpower_bp.create_manpower>,
+ <Rule '/api/v1/manpower/<id>' (HEAD, OPTIONS, GET) -> manpower_bp.get_manpower>,
+ <Rule '/api/v1/manpower/<id>' (OPTIONS, PUT) -> manpower_bp.update_manpower>,
+ <Rule '/api/v1/manpower/<id>' (OPTIONS, DELETE) -> manpower_bp.delete_manpower>,
+ <Rule '/api/v1/services' (HEAD, OPTIONS, GET) -> service_bp.get_services>,
+ <Rule '/api/v1/services' (OPTIONS, POST) -> service_bp.create_service>,
+ <Rule '/api/v1/services/<id>' (HEAD, OPTIONS, GET) -> service_bp.get_service>,
+ <Rule '/api/v1/services/<id>' (OPTIONS, PUT) -> service_bp.update_service>,
+ <Rule '/api/v1/services/<id>' (OPTIONS, DELETE) -> service_bp.delete_service>,
+ <Rule '/api/v1/work-orders' (HEAD, OPTIONS, GET) -> work_order_bp.get_work_orders>,
+ <Rule '/api/v1/work-orders' (OPTIONS, POST) -> work_order_bp.create_work_order>,
+ <Rule '/api/v1/work-orders/<id>' (HEAD, OPTIONS, GET) -> work_order_bp.get_work_order>,
+ <Rule '/api/v1/work-orders/<id>' (OPTIONS, PUT) -> work_order_bp.update_work_order>,
+ <Rule '/api/v1/work-orders/<id>' (OPTIONS, DELETE) -> work_order_bp.delete_work_order>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs' (HEAD, OPTIONS, GET) -> work_order_cost_bp.get_work_order_costs>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs' (OPTIONS, POST) -> work_order_cost_bp.add_work_order_cost>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs/<cost_id>' (HEAD, OPTIONS, GET) -> work_order_cost_bp.get_work_order_cost>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs/<cost_id>' (OPTIONS, PUT) -> work_order_cost_bp.update_work_order_cost>,
+ <Rule '/api/v1/work-orders/<work_order_id>/costs/<cost_id>' (OPTIONS, DELETE) -> work_order_cost_bp.delete_work_order_cost>,
+ <Rule '/api/v1/slas' (HEAD, OPTIONS, GET) -> sla_bp.get_slas>,
+ <Rule '/api/v1/slas' (OPTIONS, POST) -> sla_bp.create_sla>,
+ <Rule '/api/v1/slas/<id>' (HEAD, OPTIONS, GET) -> sla_bp.get_sla>,
+ <Rule '/api/v1/slas/<id>' (OPTIONS, PUT) -> sla_bp.update_sla>,
+ <Rule '/api/v1/slas/<id>' (OPTIONS, DELETE) -> sla_bp.delete_sla>,
+ <Rule '/api/v1/slas/<sla_id>/results' (HEAD, OPTIONS, GET) -> sla_result_bp.get_sla_results>,
+ <Rule '/api/v1/slas/<sla_id>/results' (OPTIONS, POST) -> sla_result_bp.add_sla_result>,
+ <Rule '/api/v1/slas/<sla_id>/results/<result_id>' (HEAD, OPTIONS, GET) -> sla_result_bp.get_sla_result>,
+ <Rule '/api/v1/slas/<sla_id>/results/<result_id>' (OPTIONS, PUT) -> sla_result_bp.update_sla_result>,
+ <Rule '/api/v1/slas/<sla_id>/results/<result_id>' (OPTIONS, DELETE) -> sla_result_bp.delete_sla_result>,
+ <Rule '/api/v1/kpis' (HEAD, OPTIONS, GET) -> kpi_bp.get_kpis>,
+ <Rule '/api/v1/kpis' (OPTIONS, POST) -> kpi_bp.create_kpi>,
+ <Rule '/api/v1/kpis/<id>' (HEAD, OPTIONS, GET) -> kpi_bp.get_kpi>,
+ <Rule '/api/v1/kpis/<id>' (OPTIONS, PUT) -> kpi_bp.update_kpi>,
+ <Rule '/api/v1/kpis/<id>' (OPTIONS, DELETE) -> kpi_bp.delete_kpi>,
+ <Rule '/api/v1/kpis/<kpi_id>/results' (HEAD, OPTIONS, GET) -> kpi_result_bp.get_kpi_results>,
+ <Rule '/api/v1/kpis/<kpi_id>/results' (OPTIONS, POST) -> kpi_result_bp.add_kpi_result>,
+ <Rule '/api/v1/kpis/<kpi_id>/results/<result_id>' (HEAD, OPTIONS, GET) -> kpi_result_bp.get_kpi_result>,
+ <Rule '/api/v1/kpis/<kpi_id>/results/<result_id>' (OPTIONS, PUT) -> kpi_result_bp.update_kpi_result>,
+ <Rule '/api/v1/kpis/<kpi_id>/results/<result_id>' (OPTIONS, DELETE) -> kpi_result_bp.delete_kpi_result>,
+ <Rule '/api/v1/invoices' (HEAD, OPTIONS, GET) -> invoice_bp.get_invoices>,
+ <Rule '/api/v1/invoices/<id>' (HEAD, OPTIONS, GET) -> invoice_bp.get_invoice>,
+ <Rule '/api/v1/invoices/generate' (OPTIONS, POST) -> invoice_bp.generate_monthly_invoices>,
+ <Rule '/api/v1/invoices/<id>/status' (OPTIONS, PUT) -> invoice_bp.update_invoice_status>,
+ <Rule '/api/v1/invoices/<id>/export/csv' (HEAD, OPTIONS, GET) -> invoice_bp.export_invoice_csv>,
+ <Rule '/api/v1/invoices/<id>/export/pdf' (HEAD, OPTIONS, GET) -> invoice_bp.export_invoice_pdf>,
+ <Rule '/api/v1/reports/work_order_status' (HEAD, OPTIONS, GET) -> report_bp.work_order_status_report>,
+ <Rule '/api/v1/reports/asset_count_by_type' (HEAD, OPTIONS, GET) -> report_bp.asset_count_by_type_report>,
+ <Rule '/api/v1/reports/monthly_cost_summary' (HEAD, OPTIONS, GET) -> report_bp.monthly_cost_summary_report>,
+ <Rule '/api/v1/notifications' (HEAD, OPTIONS, GET) -> notification_bp.get_notifications>,
+ <Rule '/api/v1/notifications/<id>/read' (OPTIONS, PATCH) -> notification_bp.mark_notification_as_read>,
+ <Rule '/api/v1/notifications/read_all' (OPTIONS, PATCH) -> notification_bp.mark_all_notifications_as_read>,
+ <Rule '/api/v1/integrations/sap/push_invoice/<invoice_id>' (OPTIONS, POST) -> integration_bp.trigger_push_invoice_to_sap>,
+ <Rule '/api/v1/integrations/sap/payment_status/<invoice_id>' (HEAD, OPTIONS, GET) -> integration_bp.trigger_fetch_payment_status_from_sap>,
+ <Rule '/api/v1/integrations/maximo/create_work_order/<work_order_id>' (OPTIONS, POST) -> integration_bp.trigger_create_work_order_in_maximo>,
+ <Rule '/api/v1/integrations/maximo/update_work_order_status/<work_order_id>' (OPTIONS, PATCH) -> integration_bp.trigger_update_work_order_status_in_maximo>,
+ <Rule '/api/v1/integrations/maximo/sync_asset/<external_asset_id>' (OPTIONS, POST) -> integration_bp.trigger_sync_asset_from_maximo>,
+ <Rule '/api/v1/auth/login' (OPTIONS, POST) -> auth_bp.login>,
+ <Rule '/api/v1/auth/refresh' (OPTIONS, POST) -> auth_bp.refresh>,
+ <Rule '/api/v1/auth/me' (HEAD, OPTIONS, GET) -> auth_bp.get_current_user>])
+------------------------
+Checking migrations directory: /home/ubuntu/fms_backend/migrations
+Generating potential migration for authentication fields...
+Migration script generated (if changes detected). Applying migrations...
+Database migrations applied successfully.
+ * Serving Flask app 'main'
+ * Debug mode: off
+INFO  [werkzeug] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5003
+ * Running on http://169.254.0.21:5003
+INFO  [werkzeug] [33mPress CTRL+C to quit[0m
+INFO  [werkzeug] 127.0.0.1 - - [03/May/2025 08:38:49] "GET /health HTTP/1.1" 200 -

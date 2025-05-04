@@ -1,0 +1,47 @@
+name: Deploy Frontend to Render
+
+on:
+  push:
+    branches: [ main ] # Or your default branch
+    # Optional: Trigger only if frontend files change
+    # paths:
+    #   - 'fms_frontend/**'
+    #   - '.github/workflows/deploy-frontend.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use Node.js 20 or the version required by your frontend
+
+      - name: Install Dependencies and Build Frontend
+        # Assuming frontend is in fms_frontend directory
+        working-directory: ./fms_frontend
+        run: |
+          npm install # Or pnpm install / yarn install based on your project
+          # Ensure the build command uses the correct API URL environment variable
+          # The VITE_API_BASE_URL is set in render.yaml for the build process on Render
+          # If building here, you might need to pass it differently or use a placeholder
+          npm run build 
+
+      - name: Trigger Render Deploy Hook
+        # Use Render's deploy hook URL for simplicity
+        # Find the Deploy Hook URL in your Render frontend service settings
+        # Store the hook URL as a secret in GitHub: RENDER_FRONTEND_DEPLOY_HOOK_URL
+        run: curl -X POST ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK_URL }}
+        # Alternatively, use Render CLI/API if preferred (similar to backend workflow)
+        # - name: Install Render CLI (if needed)
+        #   run: |
+        #     npm install -g @renderinc/render-cli 
+        # - name: Trigger Render Deploy via API
+        #   env:
+        #     RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        #     RENDER_FRONTEND_SERVICE_ID: ${{ secrets.RENDER_FRONTEND_SERVICE_ID }} # Get from Render service settings
+        #   run: render deploy --service-id $RENDER_FRONTEND_SERVICE_ID
+
