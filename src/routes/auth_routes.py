@@ -1,42 +1,31 @@
-from fastapi import APIRouter, HTTPException, Request
-from src.models.stakeholder import Stakeholder
-from src.db import SessionLocal
+# fms_backend/src/routes/auth_routes.py
+
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlalchemy.orm import Session
+from src.db import get_db       # your DB setup helper
+from src.models.stakeholder import Stakeholder  # your User model
+import bcrypt
+import jwt  # if you use JWT tokens, otherwise remove
 
 router = APIRouter()
 
 @router.post("/login")
-async def login(request: Request):
-    data = await request.json()
-    email = data.get("email")
-    password = data.get("password")
+async def login(request: Request, db: Session = Depends(get_db)):
+    # read the JSON body
+    body = await request.json()
+    email = body.get("email")
+    password = body.get("password")
+    if not email or not password:
+        raise HTTPException(status_code=400, detail="Email and password required")
 
-    db = SessionLocal()
-    try:
-        user = db.query(Stakeholder).filter(Stakeholder.contact_email == email).first()
-        if not user:
-            raise HTTPException(status_code=401, detail="User not found")
-
-        if user.contact_email == "admin@example.com":
-            return {
-                "message": "Login bypassed for admin@example.com",
-                "user": {
-                    "id": user.id,
-                    "name": user.name,
-                    "email": user.contact_email,
-                }
-            }
-
-        if user.check_password(password):
-            return {
-                "message": "Login successful",
-                "user": {
-                    "id": user.id,
-                    "name": user.name,
-                    "email": user.contact_email,
-                }
-            }
-
+    user = db.query(Stakeholder).filter(Stakeholder.contact_email == email).first()
+    if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    finally:
-        db.close()
 
+    # check password
+    if not bcrypt.checkpw(password.encode(), user.hashed_password.encode()):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    # return something—e.g. a token or success message
+    token = jwt.encode({"user_id": user.id}, "YOUR_SECRET_KEY", algorithm="HS256")
+    return {"access_token": token}
