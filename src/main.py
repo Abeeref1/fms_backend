@@ -1,16 +1,17 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.db import Base, engine
+import src.models.stakeholder     # <-- ensures SQLAlchemy knows your model
 from src.routes.auth_routes import router as auth_router
 
-# ── CREATE TABLES ───────────────────────────────────────────────────────────────
-Base.metadata.create_all(bind=engine)
+app = FastAPI()
 
-# ── FASTAPI APP ────────────────────────────────────────────────────────────────
-app = FastAPI(title="FMS Backend")
+@app.on_event("startup")
+def create_tables():
+    Base.metadata.create_all(bind=engine)
 
-# ── CORS ────────────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,5 +20,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── ROUTES ──────────────────────────────────────────────────────────────────────
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(auth_router, prefix="/api/v1/auth")
