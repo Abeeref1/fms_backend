@@ -2,10 +2,6 @@ services:
   - type: web
     name: fms-backend
     env: python
-    region: oregon    # <-- choose your region
-    plan: starter     # <-- pick your plan
-    buildCommand: pip install --no-cache-dir -r requirements.txt
+    plan: free
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn -k uvicorn.workers.UvicornWorker src.main:app --bind 0.0.0.0:10000
-    envVars:
-      - key: DATABASE_URL
-        value: sqlite:///./data.db   # or your production database URL
