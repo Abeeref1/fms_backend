@@ -1,44 +1,40 @@
 import os
-from fastapi import FastAPI, Depends
+
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from passlib.context import CryptContext
 
-# bring in your Stakeholder model & auth router
-from src.models.stakeholder import Stakeholder
 from src.routes.auth_routes import router as auth_router
+from src.models.stakeholder import Stakeholder
 
-# --- DB setup ---
+# --- Database setup ---
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data.db")
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# --- default admin creds ---
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@example.com")
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "FM-System-2025!")
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# password hashing (must match auth_routes.py)
-pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+# --- App init ---
+app = FastAPI()
 
-app = FastAPI(version="0.1.0")
-
+# Auto-create tables and default admin
 @app.on_event("startup")
 def on_startup():
-    # 1) Create all tables
     Base.metadata.create_all(bind=engine)
-
-    # 2) Auto-insert default admin if not present
     db = SessionLocal()
     try:
-        exists = db.query(Stakeholder).filter(Stakeholder.contact_email == ADMIN_EMAIL).first()
-        if not exists:
-            hashed = pwd_context.hash(ADMIN_PASSWORD)
+        # Check if admin exists
+        stmt = select(Stakeholder).where(Stakeholder.contact_email == "admin@example.com")
+        if not db.execute(stmt).scalar_one_or_none():
+            hashed = pwd_context.hash("FM-System-2025!")
             admin = Stakeholder(
                 name="Administrator",
-                contact_email=ADMIN_EMAIL,
+                contact_email="admin@example.com",
                 hashed_password=hashed
             )
             db.add(admin)
@@ -46,14 +42,16 @@ def on_startup():
     finally:
         db.close()
 
-# Enable CORS
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], allow_credentials=True,
-    allow_methods=["*"],  allow_headers=["*"],
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# DB-session dependency
+# Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -61,9 +59,9 @@ def get_db():
     finally:
         db.close()
 
-# Mount the auth router
+# Mount router
 app.include_router(
     auth_router,
     prefix="/api/v1/auth",
-    dependencies=[Depends(get_db)],
+    dependencies=[Depends(get_db)]
 )
