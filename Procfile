@@ -1,4 +1,5 @@
-web: gunicorn wsgi:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:10000
+web: gunicorn -k uvicorn.workers.UvicornWorker src.main:app --bind 0.0.0.0:10000
+
 
 
 
