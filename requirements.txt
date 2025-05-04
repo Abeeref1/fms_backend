@@ -1,6 +1,7 @@
 fastapi
-uvicorn
-gunicorn
+uvicorn[standard]
 sqlalchemy
-python-dotenv
+pydantic
 passlib[bcrypt]
+python-dotenv
+PyJWT
