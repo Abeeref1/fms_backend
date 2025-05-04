@@ -1,3 +1,4 @@
-web: uvicorn src.main:app --host=0.0.0.0 --port=10000
+web: gunicorn wsgi:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:10000
+
 
 
