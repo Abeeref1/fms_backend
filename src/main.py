@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# <-- Absolute import of your auth routes -->
-from routes.auth_routes import auth_router  
+# <-- Correct absolute import from your src package -->
+from src.routes.auth_routes import auth_router  
 
 # --------------------
 # Database setup
@@ -22,7 +22,7 @@ Base = declarative_base()
 # --------------------
 app = FastAPI()
 
-# Auto-create all tables (including stakeholders) on startup
+# Auto-create all tables on startup
 @app.on_event("startup")
 async def create_tables():
     Base.metadata.create_all(bind=engine)
