@@ -20,20 +20,21 @@ Base = declarative_base()
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@example.com")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "FM-System-2025!")
 
-# password hashing (must match auth_routes)
+# password hashing (must match auth_routes.py)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 app = FastAPI(version="0.1.0")
 
 @app.on_event("startup")
 def on_startup():
-    # create all tables
+    # 1) Create all tables
     Base.metadata.create_all(bind=engine)
 
-    # auto-create admin if missing
+    # 2) Auto-insert default admin if not present
     db = SessionLocal()
     try:
-        if not db.query(Stakeholder).filter(Stakeholder.contact_email == ADMIN_EMAIL).first():
+        exists = db.query(Stakeholder).filter(Stakeholder.contact_email == ADMIN_EMAIL).first()
+        if not exists:
             hashed = pwd_context.hash(ADMIN_PASSWORD)
             admin = Stakeholder(
                 name="Administrator",
@@ -45,14 +46,14 @@ def on_startup():
     finally:
         db.close()
 
-# CORS
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], allow_credentials=True,
-    allow_methods=["*"], allow_headers=["*"],
+    allow_methods=["*"],  allow_headers=["*"],
 )
 
-# DB dependency
+# DB-session dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -60,7 +61,7 @@ def get_db():
     finally:
         db.close()
 
-# mount auth router
+# Mount the auth router
 app.include_router(
     auth_router,
     prefix="/api/v1/auth",
