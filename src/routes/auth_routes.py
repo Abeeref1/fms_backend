@@ -1,27 +1,28 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+import os
+from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
-
 from src.db import get_db
 from src.models.stakeholder import Stakeholder
+from passlib.context import CryptContext
+import jwt
 
 router = APIRouter()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+SECRET_KEY = os.getenv("SECRET_KEY", "secret")
 
-@router.post("/login")
-async def login(request: Request, db: Session = Depends(get_db)):
-    # parse JSON body
-    data = await request.json()
-    email = data.get("email")
-    password = data.get("password")
+class LoginRequest(BaseModel):
+    email: str
+    password: str
 
-    # fetch user
-    user = db.query(Stakeholder).filter(Stakeholder.contact_email == email).first()
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
 
-    # verify credentials
-    if not user or user.hashed_password != password:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid credentials"
-        )
-
-    # return dummy token
-    return {"access_token": "token-1", "token_type": "bearer"}
+@router.post("/login", response_model=TokenResponse)
+def login(credentials: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(Stakeholder).filter(Stakeholder.contact_email == credentials.email).first()
+    if not user or not pwd_context.verify(credentials.password, user.hashed_password):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid credentials")
+    token = jwt.encode({"sub": user.contact_email}, SECRET_KEY, algorithm="HS256")
+    return {"access_token": token, "token_type": "bearer"}
