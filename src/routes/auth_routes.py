@@ -1,33 +1,68 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+import os
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 from passlib.context import CryptContext
-from sqlalchemy.orm import Session
-from src.models.stakeholder import Stakeholder
-from src.db import get_db
-from pydantic import BaseModel
 
-router = APIRouter()
+# bring in your Stakeholder model & auth router
+from src.models.stakeholder import Stakeholder
+from src.routes.auth_routes import router as auth_router
+
+# --- DB setup ---
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data.db")
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# --- default admin creds ---
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@example.com")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "FM-System-2025!")
+
+# password hashing (must match auth_routes)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-class LoginRequest(BaseModel):
-    email: str
-    password: str
+app = FastAPI(version="0.1.0")
 
-class TokenResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
+@app.on_event("startup")
+def on_startup():
+    # create all tables
+    Base.metadata.create_all(bind=engine)
 
-def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    # auto-create admin if missing
+    db = SessionLocal()
+    try:
+        if not db.query(Stakeholder).filter(Stakeholder.contact_email == ADMIN_EMAIL).first():
+            hashed = pwd_context.hash(ADMIN_PASSWORD)
+            admin = Stakeholder(
+                name="Administrator",
+                contact_email=ADMIN_EMAIL,
+                hashed_password=hashed
+            )
+            db.add(admin)
+            db.commit()
+    finally:
+        db.close()
 
-@router.post("/login", response_model=TokenResponse)
-async def login(data: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(Stakeholder).filter(Stakeholder.contact_email == data.email).first()
-    if not user or not verify_password(data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    # In a real app you'd generate a JWT here. For demo, we return a dummy.
-    return TokenResponse(access_token=f"token-{user.id}")
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], allow_credentials=True,
+    allow_methods=["*"], allow_headers=["*"],
+)
 
+# DB dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# mount auth router
+app.include_router(
+    auth_router,
+    prefix="/api/v1/auth",
+    dependencies=[Depends(get_db)],
+)
