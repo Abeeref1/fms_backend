@@ -1,0 +1,6 @@
+services:
+  - type: web_service
+    name: fms-backend
+    env: docker
+    plan: free
+    repo: https://github.com/Abeeref1/fms_backend
