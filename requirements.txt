@@ -1,7 +1,6 @@
-fastapi==0.115.12
-uvicorn==0.34.2
-sqlalchemy==2.0.40
-python-dotenv==1.1.0
-passlib[bcrypt]==1.7.4
-pydantic==2.11.4
-gunicorn==23.0.0
+fastapi
+uvicorn
+gunicorn
+sqlalchemy
+python-dotenv
+passlib[bcrypt]
