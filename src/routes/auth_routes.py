@@ -1,15 +1,12 @@
-import os
-from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
-from sqlalchemy.orm import Session
-from src.db import get_db
-from src.models.stakeholder import Stakeholder
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from passlib.context import CryptContext
-import jwt
+from sqlalchemy.orm import Session
+from src.models.stakeholder import Stakeholder
+from src.db import get_db
+from pydantic import BaseModel
 
 router = APIRouter()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = os.getenv("SECRET_KEY", "secret")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 class LoginRequest(BaseModel):
     email: str
@@ -17,12 +14,20 @@ class LoginRequest(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
-    token_type: str
+    token_type: str = "bearer"
+
+def verify_password(plain: str, hashed: str) -> bool:
+    return pwd_context.verify(plain, hashed)
 
 @router.post("/login", response_model=TokenResponse)
-def login(credentials: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(Stakeholder).filter(Stakeholder.contact_email == credentials.email).first()
-    if not user or not pwd_context.verify(credentials.password, user.hashed_password):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid credentials")
-    token = jwt.encode({"sub": user.contact_email}, SECRET_KEY, algorithm="HS256")
-    return {"access_token": token, "token_type": "bearer"}
+async def login(data: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(Stakeholder).filter(Stakeholder.contact_email == data.email).first()
+    if not user or not verify_password(data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    # In a real app you'd generate a JWT here. For demo, we return a dummy.
+    return TokenResponse(access_token=f"token-{user.id}")
+
