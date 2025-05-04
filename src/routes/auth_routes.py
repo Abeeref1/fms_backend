@@ -1,24 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
+from pydantic import BaseModel
 
 from src.db import get_db
 from src.models.stakeholder import Stakeholder
 
 router = APIRouter()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-@router.post("/login")
-async def login(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    email = data.get("email")
-    password = data.get("password")
+class LoginRequest(BaseModel):
+    email: str
+    password: str
 
-    if not email or not password:
-        raise HTTPException(status_code=400, detail="Email and password required")
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
 
-    user = db.query(Stakeholder).filter(Stakeholder.contact_email == email).first()
-    if not user or not pwd_context.verify(password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-
-    return {"message": "Logged in"}
+@router.post("/login", response_model=TokenResponse)
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(Stakeholder).filter(Stakeholder.contact_email == data.email).first()
+    if not user or not user.verify_password(data.password):
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+    # (In prod you'd issue a JWT; here we return a dummy token:)
+    token = f"token-{user.id}"
+    return {"access_token": token, "token_type": "bearer"}
